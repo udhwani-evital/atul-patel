@@ -72,7 +72,8 @@ export async function getSlotsBySlotId(req:Request,res:Response){
     const functions = new Functions();
     try {
         const {id}=req.params;
-        const slotDetails = await SlotsModel.getSlotDetailsBySlotID(+id);
+        SlotsModel.where=`where id=${parseInt(id)}`
+        const slotDetails = await SlotsModel.allRecords('*');
         if(slotDetails){
            return res.send(functions.output(1, 'Slot found:', slotDetails));
         }
@@ -133,7 +134,7 @@ export async function generateScheduleSlots(schedule: any, res: Response): Promi
 async function getAllSlots(req: Request, res: Response){
     const functions = new Functions();
     try {
-        const slots = await SlotsModel.getAllSlots();
+        const slots = await SlotsModel.allRecords('*');
         if(slots.length<0){
             return res.send(functions.output(0, 'No Slots Found...', slots));
         }
@@ -144,12 +145,15 @@ async function getAllSlots(req: Request, res: Response){
     }
 }
 
+
+
 // get slots by doctor ID
 async function getSlotsByDoctorId(req: Request, res: Response){
     const functions = new Functions();
     try {
         const doctorId = parseInt(req.params.doctorId, 10);
-        const slots = await SlotsModel.getSlotsByDoctorId(doctorId);
+        SlotsModel.where = `where doctor_id=${doctorId}`;
+        const slots = await SlotsModel.allRecords('*');
         if(slots.length<1){
             return res.send(functions.output(0, 'No Slot available for the doctor.', slots));
         }
@@ -165,7 +169,8 @@ async function getSlotsByDoctorId(req: Request, res: Response){
 async function getSlotsByAvailability(req: Request, res: Response){
     const functions = new Functions();
     try {
-        const slots =await SlotsModel.getSlotsByAvailability();
+        SlotsModel.where = `where status='available' OR status='cancelled'`;
+        const slots =await SlotsModel.allRecords('*');
         if(slots.length<1){
             return res.send(functions.output(0, 'No Slots Found...', slots));
         }

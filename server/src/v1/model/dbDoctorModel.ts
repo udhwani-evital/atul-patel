@@ -25,26 +25,6 @@ class DoctorModel extends Appdb {
     this.uniqueField = '';
   }
 
-  /**
-   * Finds all doctors in the database.
-   * @returns An array of all doctors.
-   */
-  async findAllClinics(): Promise<Doctor[]> {
-    this.table='clinic';
-    this.uniqueField='';
-    const result= this.allRecords('*');
-    return result;
-  }
-
-  /**
-   * Finds all specialties in the database.
-   * @returns An array of all specialties.
-   */
-  async findAllSpecialties(): Promise<any> {
-    this.table = 'specialty';
-    const result= this.allRecords('*');
-    return result;
-  }
 
   /**
    * Finds a doctor by their ID.
@@ -58,48 +38,6 @@ class DoctorModel extends Appdb {
       LEFT JOIN specialty s ON d.specialty_id=s.specialty_id`;
     const result = await this.allRecords(fields);
     return result.length > 0 ? result[0] : null;
-  }
-
-  /**
-   * Adds a new clinic record.
-   * Admin/doctor access required.
-   * @param clinicData The data for the clinic to create.
-   * @returns The result of the insert operation.
-   */
-  async addClinic(clinicData: any): Promise<any> {
-    const result = await this.insert('clinic', {
-      name: clinicData.name,
-      address: clinicData.address,
-      contact_number: clinicData.contact_number,
-    });
-    return result;
-  }
-  
-
-  /**
-   * Deletes a clinic by ID.
-   * Admin access required.
-   * @param id The ID of the clinic to delete.
-   * @returns The result of the delete operation.
-   */
-  async deleteClinic(id: number): Promise<any> {
-    this.table = 'clinic';
-    this.uniqueField = 'clinic_id';
-    const result = await this.deleteRecord(id);
-    return result;
-  }
-
-
-  /**
-   * Deletes a doctor by their ID.
-   * Admin access required.
-   * @param id The ID of the doctor to delete.
-   * @returns The result of the delete operation.
-   */
-  async deleteDoctorById(id: number): Promise<any> {
-    this.uniqueField='doctor_id';
-    const result = await this.deleteRecord(id);
-    return result;
   }
 
 

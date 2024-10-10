@@ -55,8 +55,8 @@ async function makeBookingBySlotId(req: Request, res: Response) {
     try {
         const { id: slotID } = req.params;
         const { id: patient_id } = req.body.user;
-
-        const slotDetail = await SlotsModel.getSlotDetailsBySlotID(+slotID);
+        SlotsModel.where=`where id=${parseInt(slotID)}`
+        const slotDetail = await SlotsModel.allRecords('*');
 
         if (!slotDetail || slotDetail.status === "booked") {
             return res.send(functions.output(0, "Slot not available for booking.", null));
@@ -105,7 +105,8 @@ async function makeBookingBySlotId(req: Request, res: Response) {
 async function getAllBookedSlots(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const functions = new Functions();
     try {
-        const result = await SlotBookingModel.findAllBookings();
+        SlotBookingModel.orderby=`order by updated_at DESC`
+        const result = await SlotBookingModel.allRecords('*');
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No slot booking found.', null));
         }

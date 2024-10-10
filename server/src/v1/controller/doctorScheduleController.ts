@@ -68,7 +68,9 @@ function scheduleValidator(req: any, res: any, next: any) {
 async function viewAllDoctorsSchedules(req: Request, res: Response){
     const functions = new Functions();
     try {
-        const result = await DoctorScheduleModel.allSchedulesRecords();
+        DoctorScheduleModel.orderby=`order by doctor_id`;
+        const result = await DoctorScheduleModel.allRecords('*');
+     
         if(result){
              return res.send(functions.output(1, 'Doctors schedules are : !', result));
         }
@@ -124,7 +126,7 @@ async function deleteSchedule(req: Request, res: Response): Promise<Response<any
     try {
         const { id } = req.params;
 
-        const isDeleted = await DoctorScheduleModel.deleteSchedule(parseInt(id));
+        const isDeleted = await DoctorScheduleModel.deleteRecord(parseInt(id));
         if (!isDeleted) {
             return res.send(functions.output(0, 'Failed to delete schedule', null));
         }
@@ -143,7 +145,8 @@ async function getScheduleByDoctorId(req: Request, res: Response): Promise<Respo
     const functions = new Functions();
     try {
         const { doctorId } = req.params;
-        const schedules = await DoctorScheduleModel.getScheduleByDoctorId(parseInt(doctorId));
+        DoctorScheduleModel.where=`where doctor_id=${parseInt(doctorId)}`
+        const schedules = await DoctorScheduleModel.allRecords('*');
         if(schedules){
             return res.send(functions.output(1, 'Schedules retrieved successfully', schedules));
         }
@@ -161,8 +164,10 @@ async function getScheduleByDoctorId(req: Request, res: Response): Promise<Respo
 async function getScheduleByScheduleId(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
     const functions = new Functions();
     try {
-        const { id } = req.params;
-        const schedules = await DoctorScheduleModel.getScheduleById(parseInt(id));
+        let { id } = req.params;
+
+        DoctorScheduleModel.where=`where id=${parseInt(id)}`
+        const schedules = await DoctorScheduleModel.allRecords('*');
         if(schedules){
             return res.send(functions.output(1, 'Schedule details retrieved successfully', schedules));
         }

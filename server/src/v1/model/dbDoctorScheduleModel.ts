@@ -51,51 +51,6 @@ class DoctorScheduleModel extends Appdb {
     return result > 0 ? { id: result,...schedule } : null;
   }
 
-  /** Admin doctor access:
-   * Updates an existing doctor's schedule.
-   * @param id The ID of the schedule to update.
-   * @param updates The updates to apply to the schedule.
-   * @returns True if the update was successful, false otherwise.
-   */
-  async getScheduleById(id: number): Promise<DoctorSchedule| null> {
-    this.where = `where id=${id}`;
-    const result = await this.allRecords('*');
-    return result.length > 0 ? result[0] : null;
-  }
-
-
-  /** Admin doctor access:
-   * Deletes a doctor's schedule by its ID.
-   * @param id The ID of the schedule to delete.
-   * @returns True if the deletion was successful, false otherwise.
-   */
-  async deleteSchedule(id: number): Promise<boolean> {
-    const result = await this.deleteRecord(id);
-    return result > 0?result:null;
-  }
-
-  /** Admin, doctor,patient access:
-   * Retrieves all schedules for a specific doctor.
-   * @param doctorId The ID of the doctor whose schedules to retrieve.
-   * @returns An array of schedules for the doctor, or an empty array if none found.
-   */
-  async getScheduleByDoctorId(doctor_id: number): Promise<DoctorSchedule[]> {
-    this.where=`where doctor_id=${doctor_id}`
-    const result = await this.allRecords('*');
-    return result.length > 0 ? result : [];
-  }
-
-
-  /** Admin access:
-   * Retrieves all schedules for all doctor.
-   * @returns An array of schedules for the doctors, or an empty array if none found.
-   */
-  async allSchedulesRecords(): Promise<DoctorSchedule[]> {
-    this.orderby=`order by doctor_id`
-    const result = await this.allRecords("*");
-    return result.length > 0 ? result : [];
-  }
-
 
 }
 

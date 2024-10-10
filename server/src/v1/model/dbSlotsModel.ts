@@ -35,58 +35,10 @@ async storeSlotsForSchedule(slots: SlotsAvailability[]): Promise<SlotsAvailabili
         insertResults.push(result);
     }
     return insertResults.length>0?insertResults:null;
-}
-
-
- /**
-     * Retrieve all slots.
-     * @returns An array of all slots.
- */
-async getAllSlots(){   
-        const result = await this.allRecords('*');
-        return result.length > 0 ? result : [];
-}
-
-
-
-/**
-     * Retrieve slot by slot ID.
-     * @param doctorId The ID of the doctor whose slots to retrieve.
-     * @returns An array of slots for the specified doctor.
-*/
-    async getSlotDetailsBySlotID(slotId: number): Promise<SlotsAvailability> {
-        this.where=`where id=${slotId}`
-        const result = await this.allRecords('*');
-        return result.length > 0 ? result[0] : null;
-  }
-
-
-
-/**
-     * Retrieve slots by doctor ID.
-     * @param doctorId The ID of the doctor whose slots to retrieve.
-     * @returns An array of slots for the specified doctor.
-*/
-    async getSlotsByDoctorId(doctorId: number): Promise<SlotsAvailability[]> {
-        this.where = `where doctor_id=${doctorId}`;
-        const result = await this.allRecords('*');
-        return result.length > 0 ? result : [];
-    }
-
-
- 
-/**
-     * Retrieve slots by Availabilty 
-     * @returns An array of slots for all doctor.
-*/
-    async getSlotsByAvailability(): Promise<SlotsAvailability[]> {
-        this.where = `where status='available' OR status='cancelled'`;
-        const result = await this.allRecords('*');
-        return result.length > 0 ? result : [];
-   }    
+} 
     
 
-/**
+/** using at multiple places:
    * Update the status of a slot by its ID.
    * @param id The ID of the slot to update.
    * @param newStatus The new status to set ('booked' or 'cancelled').

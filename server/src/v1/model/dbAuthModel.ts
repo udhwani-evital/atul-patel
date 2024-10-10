@@ -55,25 +55,6 @@ class UserModel extends Appdb {
     return result.length > 0 ? result[0] : null;
   }
 
-    /**
-   * ADMIN: Finds all doctors in the database.
-   * @returns An array of all doctors.
-   */
-  async findAllDoctors():Promise<User[]> {
-    this.table='doctor';
-    return this.allRecords();
-  }
-
-    /**
-   * ADMIN: Finds all patients in the database.
-   * @returns An array of all patients.
-   */
-  async findAllPatients():Promise<User[]> {
-   this.table='patient';
-    return this.allRecords();
-  }
-
-
 
   /**
    * Updates a user's(patient or doctor) information.

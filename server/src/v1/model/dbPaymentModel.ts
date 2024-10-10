@@ -11,8 +11,8 @@ export interface Payment {
 class PaymentModel extends Appdb {
     constructor() {
         super();
-        this.table = 'Payment'; // Name of the table in the database
-        this.uniqueField = 'id'; // Unique field used for record identification
+        this.table = 'Payment'; 
+        this.uniqueField = 'id'; 
     }
 
 
@@ -56,19 +56,7 @@ class PaymentModel extends Appdb {
         return result > 0; // Returns true if update was successful
     }
 
-
-
-
-    /**
-     * Retrieves all payments from the database.
-     * @returns An array of all payment records.
-     */
-    async getAllPayments(): Promise<Payment[]> {
-        return this.allRecords(); // Returns all payment records
-    }
-
-
-
+   
 
     /**
      * Retrieves payments associated with a specific doctor.

@@ -18,36 +18,8 @@ class PatientModel extends Appdb {
     this.table = 'patient';
     this.uniqueField = 'patient_id';
   }
+ 
 
-  /** ADMIN power:
-   * Finds all patients in the database.
-   * @returns An array of all patients.
-   */
-  async findAllPatients(): Promise<Patient[]> {
-    const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
-    return this.allRecords(fields);
-  }
-
-  /** ANY logged in user accesss:
-   * Finds a patient by their ID.
-   * @param id The ID of the patient to find.
-   * @returns The found patient or null.
-   */
-  async findPatientById(patient_id: number): Promise<Patient | null> {
-    const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
-    const result = await this.selectRecord(patient_id,fields);
-    return result.length > 0 ? result[0] : null;
-  }
-
-  /** Admin access only:
-   * Deletes a patient by their ID (admin only).
-   * @param id The ID of the patient to delete.
-   * @returns The result of the delete operation.
-   */
-  async deletePatientById(patient_id: number): Promise<any> {
-    const result = await this.deleteRecord(patient_id);
-    return result;
-  }
 }
 
 export default new PatientModel();

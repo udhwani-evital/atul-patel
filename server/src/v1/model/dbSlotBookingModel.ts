@@ -131,20 +131,7 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
   }
 
 
-
-
-/** Access: Admin only...
-//    * Fetch all bookings of each and every doctor/patient(admin only).
-//    * @returns All booking records.
-//    */
-  async findAllBookings(): Promise<any> {
-    this.orderby=`order by updated_at DESC`
-    const result = await this.allRecords('*');
-    return result.length > 0 ? result : null; 
-  }
-
-
- /** 
+ /** using twice....
 //    * Fetch booking by bookinngId.
 //    * @returns booking detials.
 //    */

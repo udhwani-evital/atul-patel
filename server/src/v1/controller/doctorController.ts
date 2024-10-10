@@ -3,6 +3,8 @@ import Joi from 'joi';
 import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import DoctorModel from '../model/dbDoctorModel';
+import ClinicModel from '../model/dbClinicModel';
+import SpecialtyModel from '../model/dbSpecialtyModel';
 import {updateProfile} from '../controller/authController';
 
 
@@ -206,7 +208,7 @@ async function searchDoctorsWithSchedules(req: Request, res: Response): Promise<
 async function getAllClinics(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const functions = new Functions();
     try {
-        const result = await DoctorModel.findAllClinics();
+        const result = await ClinicModel.allRecords();
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No Clinics found.', null));
         }
@@ -216,6 +218,7 @@ async function getAllClinics(req: Request, res: Response): Promise<Response<any,
         return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
+
 
 // Function to get doctor by ID
 async function getDoctorById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
@@ -242,7 +245,7 @@ async function getDoctorById(req: Request, res: Response): Promise<Response<any,
 async function getAllSpecialties(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const functions = new Functions();
     try {
-        const result = await DoctorModel.findAllSpecialties();
+        const result = await SpecialtyModel.allRecords();
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No specialties found!', null));
         }
@@ -259,7 +262,7 @@ async function addClinic(req: Request, res: Response): Promise<Response<any, Rec
     const functions = new Functions();
     try {
         const clinicData = req.body;
-        const result = await DoctorModel.addClinic(clinicData);
+        const result = await ClinicModel.addClinic(clinicData);
 
         if (!result) {
             return res.send(functions.output(0, 'Failed to add clinic.', null));
@@ -284,7 +287,7 @@ async function deleteClinicById(req: Request, res: Response): Promise<Response<a
             return res.send(functions.output(0, 'Invalid clinic ID', null));
         }
 
-        const result = await DoctorModel.deleteClinic(clinic_id);
+        const result = await ClinicModel.deleteRecord(clinic_id);
         if (!result) {
             return res.send(functions.output(0, 'Clinic ID does not exist.', null));
         }
@@ -307,7 +310,7 @@ async function deleteDoctorById(req: Request, res: Response): Promise<Response<a
             return res.send(functions.output(0, 'Invalid doctor ID', null));
         }
 
-        const result = await DoctorModel.deleteDoctorById(doctor_id);
+        const result = await DoctorModel.deleteRecord(doctor_id);
         if (!result) {
             return res.send(functions.output(0, 'Doctor ID does not exist.', null));
         }

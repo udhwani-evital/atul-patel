@@ -101,7 +101,7 @@ async function createPayment(req: Request, res: Response) {
 async function getAllPayments(req: Request, res: Response) {
     const functions = new Functions();
     try {
-        const payments = await PaymentModel.getAllPayments();
+        const payments = await PaymentModel.allRecords();
         return res.send(functions.output(1, 'All payments retrieved successfully', payments));
     } 
     catch (error) {

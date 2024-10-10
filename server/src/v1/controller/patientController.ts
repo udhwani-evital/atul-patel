@@ -64,7 +64,8 @@ function updateProfileValidator(req: any, res: any, next: any) {
 async function getAllPatients(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const functions = new Functions();
     try {
-        let result = await PatientModel.findAllPatients();
+        const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
+        let result = await PatientModel.allRecords(fields);
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No patients found.', null));
         }
@@ -89,7 +90,8 @@ async function getPatientById(req: Request, res: Response): Promise<Response<any
             return res.send(functions.output(0, 'Invalid patient ID', null));
         }
 
-        const result = await PatientModel.findPatientById(patient_id);
+        const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
+        const result = await PatientModel.selectRecord(patient_id,fields);
         if (!result) {
             return res.send(functions.output(0, 'No such patient exists.', null));
         }
@@ -113,7 +115,7 @@ async function deletePatientById(req: Request, res: Response): Promise<Response<
             return res.send(functions.output(0, 'Invalid patient ID', null));
         }
 
-        const result = await PatientModel.deletePatientById(patient_id);
+        const result = await PatientModel.deleteRecord(patient_id);
         if (!result) {
             return res.send(functions.output(0, 'Patient ID does not exist.', null));
         }
