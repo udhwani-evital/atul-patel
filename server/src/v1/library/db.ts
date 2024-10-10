@@ -61,22 +61,9 @@ export class db {
 	 */
 	select(table: string, fields: string, where: string, orderby: string, limit: string) {
 		let query = 'SELECT ' + fields + ' FROM ' + table + ' ' + where + ' ' + orderby + ' ' + limit;
-		console.log(query)
 		return this.executeQuery(query);
 	}
-
-	// userdefined for complex join==========+++++++++++
-	complexSelect(fields: string, options: {
-        table?: string,
-        where?: string,
-        orderby?: string,
-        limit?: string,
-        join?: string,
-    } = {}) {
-        const { table = this.table, where = '', orderby = '', limit = '', join = '' } = options;
-        const query = `SELECT ${fields} FROM ${table} ${join} ${where} ${orderby} ${limit}`;
-        return this.executeQuery(query);
-    }
+	
 
 	/**
 	 * Insert given data into given table. Given data should be key-value pair object with DB field name and it's value.

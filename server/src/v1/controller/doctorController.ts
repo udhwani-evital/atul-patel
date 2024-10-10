@@ -17,7 +17,7 @@ const joiStringOptional= Joi.string().trim();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
         }
         next();
     };
@@ -136,19 +136,16 @@ function addClinicValidator(req: any, res: any, next: any) {
 async function getAllDoctors(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     try {
         let result =await DoctorModel.findAllDoctorsWithSpecialties();
-          console.log("result 0 of ...: ",result)
+
         if (result.length < 1) {
-              console.log("result 1 of ...: ",result)
             return res.send(functions.output(0, 'No doctors found.', null));
         }
-        console.log("result of ...: ",result)
+
         // Filter out Password fields from Array of object:
         result = functions.filterPassword(result);
-          console.log("result 3 of ...: ",result)
         return res.send(functions.output(1, 'Doctors found.', result));
     } catch (error) {
-        console.error('Error fetching doctors:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -164,13 +161,12 @@ async function searchDoctorsWithQuery(req: Request, res: Response): Promise<Resp
         const doctors = await DoctorModel.searchDoctorsWith_Specialization_Disease_DoctorName(searchTerm);
 
         if (doctors.length === 0) {
-            return res.status(404).json({ success: false, message: 'No matching doctors found.' });
+            return res.send(functions.output(0, 'No matching doctors found', null));
         }
-
-        return res.status(200).json({ success: true, message: 'Matching doctors found.', data: doctors });
-    } catch (error) {
-        console.error("Error searching for doctors: ", error);
-        return res.status(500).json({ success: false, message: 'Internal server error.' });
+        return res.send(functions.output(1, 'Matching doctors found.',doctors));
+    }
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 };
 
@@ -190,14 +186,14 @@ async function searchDoctorsWithSchedules(req: Request, res: Response): Promise<
 
         // Check if any doctors were found
         if (doctorsWithSchedules.length === 0) {
-            return res.status(404).json({ success: false, message: 'No matching doctors found.' });
+            return res.send(functions.output(0, 'No matching doctors found', null));
         }
 
         // Return the found doctors with their schedules
-        return res.status(200).json({ success: true, message: 'Matching doctors found.', data: doctorsWithSchedules });
-    } catch (error) {
-        console.error("Error searching for doctors with schedules: ", error);
-        return res.status(500).json({ success: false, message: 'Internal server error.' });
+        return res.send(functions.output(1, 'Matching doctors found.',doctorsWithSchedules));
+    }
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 };
 
@@ -215,8 +211,7 @@ async function getAllClinics(req: Request, res: Response): Promise<Response<any,
 
         return res.send(functions.output(1, 'Clinics found.', result));
     } catch (error) {
-        console.error('Error fetching Clinics:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -237,8 +232,7 @@ async function getDoctorById(req: Request, res: Response): Promise<Response<any,
         delete result.password;
         return res.send(functions.output(1, 'Doctor found.', result));
     } catch (error) {
-        console.error('Error fetching doctor by ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -251,9 +245,9 @@ async function getAllSpecialties(req: Request, res: Response): Promise<Response<
         }
 
         return res.send(functions.output(1, 'Specialties found.', result));
-    } catch (error) {
-        console.error('Error fetching specialties:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    }
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -268,11 +262,13 @@ async function addClinic(req: Request, res: Response): Promise<Response<any, Rec
         }
 
         return res.send(functions.output(1, 'Clinic added successfully.', result));
-    } catch (error) {
-        console.error('Error adding clinic:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
+
+
 
 // Function to delete clinic by ID
 async function deleteClinicById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
@@ -290,9 +286,9 @@ async function deleteClinicById(req: Request, res: Response): Promise<Response<a
         }
 
         return res.send(functions.output(1, 'Clinic deleted successfully.'));
-    } catch (error) {
-        console.error('Error deleting clinic:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -313,8 +309,8 @@ async function deleteDoctorById(req: Request, res: Response): Promise<Response<a
         }
 
         return res.send(functions.output(1, 'Doctor deleted successfully.'));
-    } catch (error) {
-        console.error('Error deleting doctor:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }

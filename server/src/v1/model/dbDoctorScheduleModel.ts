@@ -48,7 +48,6 @@ class DoctorScheduleModel extends Appdb {
    */
   async addSchedule(schedule: DoctorSchedule): Promise<DoctorSchedule | null> {
     const result = await this.insertRecord(schedule);
-    console.log("result on insert addschedule: model : ",result)
     return result > 0 ? { id: result,...schedule } : null;
   }
 
@@ -72,7 +71,6 @@ class DoctorScheduleModel extends Appdb {
    */
   async deleteSchedule(id: number): Promise<boolean> {
     const result = await this.deleteRecord(id);
-    console.log("deleted schedule: ",result);
     return result > 0?result:null;
   }
 

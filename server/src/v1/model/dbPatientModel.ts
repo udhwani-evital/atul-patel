@@ -34,7 +34,6 @@ class PatientModel extends Appdb {
    */
   async findPatientById(patient_id: number): Promise<Patient | null> {
     const result = await this.selectRecord(patient_id);
-    //console.log("fetched patient by id: ",result)
     return result.length > 0 ? result[0] : null;
   }
 

@@ -43,8 +43,8 @@ export class connection {
 			}
 			return result;
 		} catch (error) {
-			console.log(error);
 			connection.connection = false;
+			console.log('Database Connection Error:', error);
 			return false;
 		}
 	}

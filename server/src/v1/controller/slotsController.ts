@@ -13,7 +13,7 @@ const functions = new Functions();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0, 'Access denied', null));
         }
         next();
     };
@@ -79,9 +79,8 @@ export async function getSlotsBySlotId(req:Request,res:Response){
             return res.send(functions.output(0, 'Slot not found. Chekc id.', slotDetails));
         }
     }
-    catch(error){
-        console.log("error at getting slot.")
-        return res.send(functions.output(0, error));;
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -97,7 +96,7 @@ export async function generateScheduleSlots(schedule: any, res: Response): Promi
         
         // Generate time slots based on the schedule details
         const slotsArray = functions.generateTimeSlots(start_time, end_time, consultation_duration);
-        console.log("slotsArray: ", slotsArray);
+        
         
         const slots: SlotsAvailability[] = slotsArray.map(slotTime => ({
             schedule_id: Number(id),
@@ -109,8 +108,7 @@ export async function generateScheduleSlots(schedule: any, res: Response): Promi
             status: 'available',
             fee
         }));
-
-        console.log("Generated slots: ", slots);
+        
 
         // Insert slots into the database
         const result = await SlotsModel.storeSlotsForSchedule(slots);
@@ -122,9 +120,9 @@ export async function generateScheduleSlots(schedule: any, res: Response): Promi
 
         // Handle the case where no slots were inserted
         return res.send(functions.output(0, 'No slots created!', null));
-    } catch (error) {
-        console.error('Error creating slots:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    }
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -137,9 +135,9 @@ async function getAllSlots(req: Request, res: Response){
             return res.send(functions.output(0, 'No Slots Found...', slots));
         }
         else return res.send(functions.output(1, 'All slots retrieved successfully', slots));                
-    } catch (error) {
-        console.error('Error fetching all slots:', error);
-        return res.send(functions.output(0, error, null));
+    }
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -152,9 +150,9 @@ async function getSlotsByDoctorId(req: Request, res: Response){
             return res.send(functions.output(0, 'No Slot available for the doctor.', slots));
         }
         else return res.send(functions.output(1, 'Slots retrieved for doctor', slots));
-    } catch (error) {
-        console.error('Error fetching slots by doctor ID:', error);
-        return res.send(functions.output(0, error, null));
+    }
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 };
 
@@ -167,13 +165,11 @@ async function getSlotsByAvailability(req: Request, res: Response){
             return res.send(functions.output(0, 'No Slots Found...', slots));
         }
         else{
-            console.log("slots are: ",slots);
             return res.send(functions.output(1, 'Slots retrieved for doctor', slots));
         } 
     }
-    catch(error){
-        console.error('Error fetching slots by availability:', error);
-        return res.send(functions.output(0, error, null));
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -183,7 +179,6 @@ async function getAllDoctorsBySpecialtyOrDiseaseName(req: Request, res: Response
     try{
         const searchQuery = req.body||'*';
         const result =await SlotsModel.getDoctorsWithAvailableSlots(searchQuery);
-        console.log("result in slot controller doc by speciality: ",result)
 
         if(result){
             return res.send(functions.output(1,"Output: ",result));
@@ -193,8 +188,7 @@ async function getAllDoctorsBySpecialtyOrDiseaseName(req: Request, res: Response
         }
 
     }
-    catch(error){
-        console.error('Error fetching doctors with available slots:', error);
-        return res.send(functions.output(0, error, null));
+    catch (error) {        
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }

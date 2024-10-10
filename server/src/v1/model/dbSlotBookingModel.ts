@@ -42,13 +42,8 @@ class SlotBookingModel extends Appdb {
 async bookSlot(slot_id:number,doctor_id:number,patient_id:number,clinic_id:number,appointment_time:string|any,appointment_date:string|any, fee:number):Promise<BookedSlotSchema>{
     const data ={
       doctor_id,patient_id,clinic_id,slot_id,appointment_date,appointment_time,fee,status:"booked"
-    }
-
-    console.log("coming data: ", data)
-    
+    }    
     const response = await this.insertRecord(data);
-    console.log(response)
-
     return response;
 }
 
@@ -66,7 +61,6 @@ async bookSlot(slot_id:number,doctor_id:number,patient_id:number,clinic_id:numbe
 async cancelBookingStatus(id: number): Promise<any | boolean> {
     // Fetch the booking record using the provided ID
     const booking = await this.getBookingByBookingId(id);
-    //console.log("sl : ",booking)
     if (!booking) {
         return {status:false,message:"Slot not found"};
     }
@@ -75,7 +69,6 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
     const todaysDate=new Date();  //obj type: 2024-10-07T07:06:47.891Z
     const appointmentDate=booking.appointment_date; //obj type: 2024-10-07T07:06:47.891Z   ...from db 
     const appointmentTime=booking.appointment_time; // from db type string: 09:06:47
-    //console.log(todaysDate, typeof todaysDate,appointmentDate,CurrentTime,typeof CurrentTime,typeof appointmentDate,appointmentTime,typeof appointmentTime);
     
     // Check if today's date is greater than or equal to the appointment date
     if (todaysDate > appointmentDate) {
@@ -99,13 +92,10 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
     }
 
     // Proceed to cancel the booking if checks are passed
-    console.log("Proceeding to cancel booking...");
     const result = await this.updateRecord(id, {status:'cancelled'});
-    // console.log("failing",result)
     if (result) {
         // Update the slot status if the booking was successfully updated
         const finalResult = await SlotsModel.updateSlotStatus(booking.slot_id, 'cancelled');
-        console.log(finalResult)
         return {status:true,message:'Cancelled your refund underProcess.'} ;
     }
 
@@ -123,7 +113,6 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
     this.where=` where patient_id=${patientId}`
     this.orderby=`order by updated_at DESC`
     const result = await this.allRecords('*');
-    console.log("Patient's All bookings : ",result)
     return result.length > 0 ? result : null; 
   }
 
@@ -138,7 +127,6 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
     this.where=`where doctor_id=${doctorId}`
     this.orderby=`order by updated_at DESC`
     const result = await this.allRecords('*');
-    console.log("Doctor's All bookings : ",result)
     return result.length > 0 ? result : null; 
   }
 
@@ -152,7 +140,6 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
   async findAllBookings(): Promise<any> {
     this.orderby=`order by updated_at DESC`
     const result = await this.allRecords('*');
-    console.log("All bookings : ",result)
     return result.length > 0 ? result : null; 
   }
 
@@ -164,7 +151,6 @@ async cancelBookingStatus(id: number): Promise<any | boolean> {
   async getBookingByBookingId(id:number): Promise<any> {
     this.orderby=`order by updated_at DESC`;
     const result = await this.allRecords('*');
-    //console.log("in slotBooking: ",result)
     return result.length > 0 ? result[0] : null; 
   }
  

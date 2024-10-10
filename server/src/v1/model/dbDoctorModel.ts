@@ -33,7 +33,6 @@ class DoctorModel extends Appdb {
     this.table='clinic';
     this.uniqueField='';
     const result= this.allRecords('*');
-    console.log("Fetching all clinics from the model. : ", result);
     return result;
   }
 
@@ -44,7 +43,6 @@ class DoctorModel extends Appdb {
   async findAllSpecialties(): Promise<any> {
     this.table = 'specialty';
     const result= this.allRecords('*');
-    console.log("Fetching all speciality from the model. : ", result);
     return result;
   }
 
@@ -74,7 +72,6 @@ class DoctorModel extends Appdb {
       address: clinicData.address,
       contact_number: clinicData.contact_number,
     });
-    console.log("Clinic added: ", result);
     return result;
   }
   
@@ -89,7 +86,6 @@ class DoctorModel extends Appdb {
     this.table = 'clinic';
     this.uniqueField = 'clinic_id';
     const result = await this.deleteRecord(id);
-    console.log("Clinic deleted: ", result);
     return result;
   }
 
@@ -103,7 +99,6 @@ class DoctorModel extends Appdb {
   async deleteDoctorById(id: number): Promise<any> {
     this.uniqueField='doctor_id';
     const result = await this.deleteRecord(id);
-    console.log("Doctor deleted: ", result);
     return result;
   }
 

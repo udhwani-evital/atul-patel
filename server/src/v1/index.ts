@@ -7,6 +7,7 @@ import doctorScheduleRouter from "./controller/doctorScheduleController";
 import slotsRouter from "./controller/slotsController";
 import slotBookingRouter from "./controller/slotBookingController";
 import paymentRouter from './controller/paymentController';
+import { Functions } from "./library/functions";
 
 const router = express.Router();
 
@@ -14,13 +15,15 @@ const router = express.Router();
  * Token validation middleware..decode and assign decoded token to req.body.user.
  */
 export let tokenValidator = (req: Request | any, res: Response, next: NextFunction) => {
+    let functions = new Functions();
+
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
     if (typeof authHeader === 'string' && authHeader.startsWith("Bearer")) {
         const token = authHeader.split(" ")[1];
 
         if (!token) {
-            return res.status(401).send({ message: 'Access denied. No token provided' });
+            return res.send(functions.output(0, "Access denied. No token provided.", null));
         }
 
         try {
@@ -28,11 +31,12 @@ export let tokenValidator = (req: Request | any, res: Response, next: NextFuncti
             // Add the decoded token information to the request body
             req.body.user = decoded; // {"role","id","name","mobile","email","iat","exp"}
             next(); 
-        } catch (error) {
-            return res.status(400).send({ message: 'Invalid token.' });
+        }
+        catch(error) {
+             return res.send(functions.output(0, 'Invalid Token', error));
         }
     } else {
-        return res.status(401).send({ message: 'Access denied. No token provided' });
+        return res.send(functions.output(0,'Access denied. No token provided',null));
     }
 };
 

@@ -31,9 +31,7 @@ class UserModel extends Appdb {
    * @returns The created user or an error response.
    */
   async createUser(user: User): Promise<any | null> {
-    // console.log("inside model signup user: ",user)
     const hashedPassword = await bcrypt.hash(user.password!, 10);
-    // console.log("inside model signup hashed : ",hashedPassword)
     this.table = user.role === 'doctor' ? 'doctor' : 'patient';
     const data = {
       name: user.name,
@@ -41,10 +39,7 @@ class UserModel extends Appdb {
       email: user.email,
       password: hashedPassword,
     };
-//  console.log("data todsave : ",data)
-    // console.log("target table signup : ",this.table)
     const result = await this.insert(this.table, data);
-    // console.log("Result of create in UserModel: ", result);
     return result>0?result:null; // Returns the ID of the newly created user
   }
 
@@ -56,9 +51,7 @@ class UserModel extends Appdb {
    */
   async findUserByMobile(user: User): Promise<User | null> {
     this.table = user.role === 'admin' ? 'admin' : user.role === 'doctor' ? 'doctor' : 'patient';
-    // console.log("table searching for the role: ",this.table)
     const result = await this.select(this.table, '*', `WHERE mobile = '${user.mobile}'`, '', '');
-    // console.log("l58 from authmodel findusermobile : ",result)
     return result.length > 0 ? result[0] : null;
   }
 

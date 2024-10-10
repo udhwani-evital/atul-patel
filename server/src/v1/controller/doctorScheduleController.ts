@@ -17,7 +17,7 @@ const joiStringRequired = Joi.string().trim().required();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
         }
         next();
     };
@@ -75,8 +75,7 @@ async function viewAllDoctorsSchedules(req: Request, res: Response){
         else return res.send(functions.output(0, 'Doctors schedule not available!', result));
     } 
     catch (error) {
-        console.error('Error fetching all doctors schedules:', error);
-        return res.send(functions.output(0, error, null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -85,12 +84,10 @@ async function viewAllDoctorsSchedules(req: Request, res: Response){
 async function addSchedule(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
     try {
         let { doctor_id, clinic_id, start_time, end_time, consultation_duration, day,fee } = req.body;
-
-        console.log("update schedule body data is: ",req.body)
-
+        
         // Check for overlapping schedules:
         const hasConflict = await DoctorScheduleModel.checkScheduleConflict(doctor_id, start_time, end_time, day);
-        console.log("hasconflict: ",hasConflict)
+        
         if (hasConflict) {
             return res.send(functions.output(0, 'Schedule conflict detected. Please adjust your times.', null));
         }
@@ -107,15 +104,14 @@ async function addSchedule(req: Request, res: Response): Promise<Response<any, R
         };
 
         const response = await DoctorScheduleModel.addSchedule(scheduleData);
-        //console.log(response); // {id:6,doctor_id:3,clinic_id:1,start_time:'16:00',end_time:'21:00',consultation_duration:15,day:'Tuesday',fee:500}
         if(response){
             await generateScheduleSlots(response,res);
         }
         
         return res.send(functions.output(1, 'Doctor schedule updated successfully!', response));
-    } catch (error) {
-        console.error('Error updating doctor schedule:', error);
-        return res.send(functions.output(0, error, null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0,"Internal Server Error", error));
     }
 }
 
@@ -132,9 +128,9 @@ async function deleteSchedule(req: Request, res: Response): Promise<Response<any
         }
 
         return res.send(functions.output(1, 'Schedule deleted successfully', null));
-    } catch (error) {
-        console.error('Error deleting schedule:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -151,8 +147,7 @@ async function getScheduleByDoctorId(req: Request, res: Response): Promise<Respo
         else return res.send(functions.output(0, 'No Schedule available for the doctor.!', schedules));
         
     } catch (error) {
-        console.error('Error retrieving schedules by doctor ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -170,7 +165,6 @@ async function getScheduleByScheduleId(req: Request, res: Response): Promise<Res
         else return res.send(functions.output(0, 'Schedule not available. Check id.', schedules));
         
     } catch (error) {
-        console.error('Error retrieving schedules details:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }

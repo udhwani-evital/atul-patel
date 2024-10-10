@@ -16,7 +16,7 @@ const functions = new Functions();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
         }
         next();
     };
@@ -70,11 +70,13 @@ async function getAllPatients(req: Request, res: Response): Promise<Response<any
         // Filter out Password fields from Array of object:
         result = functions.filterPassword(result);
         return res.send(functions.output(1, 'Patients found.', result));
-    } catch (error) {
-        console.error('Error fetching patients:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    }
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
+
+
 
 // Function to retrieve a specific patient by their ID
 async function getPatientById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
@@ -92,11 +94,13 @@ async function getPatientById(req: Request, res: Response): Promise<Response<any
         }
         delete result.password;  //removing password
         return res.send(functions.output(1, 'Patient found.', result));
-    } catch (error) {
-        console.error('Error fetching patient by ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
+
+
 
 // Function to delete a patient by their ID (admin access only)
 async function deletePatientById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
@@ -114,9 +118,9 @@ async function deletePatientById(req: Request, res: Response): Promise<Response<
         }
 
         return res.send(functions.output(1, 'Patient deleted successfully.'));
-    } catch (error) {
-        console.error('Error deleting patient:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 

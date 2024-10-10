@@ -12,7 +12,7 @@ const functions = new Functions();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0,"Access denied",null));
         }
         next();
     };
@@ -91,9 +91,9 @@ async function makeBookingBySlotId(req: Request, res: Response) {
                 return res.send(functions.output(1, 'Slot booked successfully!', result));
             }
         }
-    } catch (error) {
-        console.error('Error booking slot:', error);
-        return res.send(functions.output(0, error, null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -109,9 +109,9 @@ async function getAllBookedSlots(req: Request, res: Response): Promise<Response<
         }
 
         return res.send(functions.output(1, 'Bookings found.', result));
-    } catch (error) {
-        console.error('Error fetching booking:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -122,13 +122,13 @@ async function cancelBookingByAppointmentId(req:Request,res:Response){
     const {id}=req.params;
     try{
         const cancelResponse= await SlotBookingModel.cancelBookingStatus(+id);
-        console.log(cancelResponse)
+
         if(cancelResponse.status){
             return res.send(functions.output(1, 'Booking cancelled successfully.', cancelResponse));
         }
-        return res.send(functions.output(0, cancelResponse.message));
-    }catch(error){
-console.error('Error fetching booking:', error);
+        return res.send(functions.output(0, cancelResponse.message,null));
+    }
+    catch(error){
         return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
@@ -146,8 +146,7 @@ async function findBookingsByPatientId(req: Request, res: Response): Promise<Res
 
         return res.send(functions.output(1, 'Bookings found.', result));
     } catch (error) {
-        console.error('Error fetching booking:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -159,7 +158,6 @@ async function findBookingsByPatientId(req: Request, res: Response): Promise<Res
 async function findBookingsByDoctorId(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     try {
         let {id} = req.params;
-        console.log("param: ",id);
         const result = await SlotBookingModel.findBookingsByDoctorId(+id);
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No booking found.', null));
@@ -167,8 +165,7 @@ async function findBookingsByDoctorId(req: Request, res: Response): Promise<Resp
 
         return res.send(functions.output(1, 'Bookings found.', result));
     } catch (error) {
-        console.error('Error fetching booking:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -182,15 +179,13 @@ async function getBookingByBookingId(req: Request, res: Response): Promise<Respo
         let {id} = req.params;
         
         const result = await SlotBookingModel.getBookingByBookingId(+id);
-        console.log(result)
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No booking such found.', null));
         }
 
         return res.send(functions.output(1, 'Bookings found.', result));
     } catch (error) {
-        console.error('Error fetching booking:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 

@@ -16,7 +16,7 @@ const functions = new Functions();
 export let authorizedRoles = (...allowedRoles: string[]) => {
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
-            return res.status(403).json({ message: "Access denied" });
+            return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
         }
         next();
     };
@@ -89,20 +89,22 @@ async function createPayment(req: Request, res: Response) {
             return res.send(functions.output(1, 'Payment created successfully!', result));
         }
         return res.send(functions.output(0, 'Failed to create payment.', null));
-    } catch (error) {
-        console.error('Error creating payment:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
+
+
 
 // Function to get all payments
 async function getAllPayments(req: Request, res: Response) {
     try {
         const payments = await PaymentModel.getAllPayments();
         return res.send(functions.output(1, 'All payments retrieved successfully', payments));
-    } catch (error) {
-        console.error('Error fetching all payments:', error);
-        return res.send(functions.output(0, error, null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -117,9 +119,9 @@ async function getPaymentsByDoctorId(req: Request, res: Response) {
             return res.send(functions.output(1, 'Payments retrieved successfully', payments));
         }
         return res.send(functions.output(0, 'No payments found for this doctor.', null));
-    } catch (error) {
-        console.error('Error fetching payments by doctor ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -132,9 +134,9 @@ async function getPaymentsByPatientId(req: Request, res: Response) {
             return res.send(functions.output(1, 'Payments retrieved successfully', payments));
         }
         return res.send(functions.output(0, 'No payments found for this patient.', null));
-    } catch (error) {
-        console.error('Error fetching payments by patient ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }
 
@@ -147,8 +149,8 @@ async function getPaymentByAppointmentId(req: Request, res: Response) {
             return res.send(functions.output(1, 'Payment found', payment));
         }
         return res.send(functions.output(0, 'No payment found for this appointment ID.', null));
-    } catch (error) {
-        console.error('Error fetching payment by appointment ID:', error);
-        return res.send(functions.output(0, 'Internal Server Error', null));
+    } 
+    catch (error) {
+        return res.send(functions.output(0, 'Internal Server Error', error));
     }
 }

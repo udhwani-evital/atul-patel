@@ -38,10 +38,8 @@ async storeSlotsForSchedule(slots: SlotsAvailability[]): Promise<SlotsAvailabili
         const insertResults = [];
     for (const slot of slots) {
         const result = await this.insertRecord(slot); // Assuming insertRecord handles individual insertion
-        console.log("inside loop to isnert model: ",result)
         insertResults.push(result);
     }
-    console.log("inside insert fucntion model : ",insertResults)
     return insertResults.length>0?insertResults:null;
 }
 
@@ -50,10 +48,8 @@ async storeSlotsForSchedule(slots: SlotsAvailability[]): Promise<SlotsAvailabili
      * Retrieve all slots.
      * @returns An array of all slots.
  */
-async getAllSlots(){
-        
+async getAllSlots(){   
         const result = await this.allRecords('*');
-        //console.log("all slot ",result)
         return result.length > 0 ? result : [];
 }
 
@@ -67,7 +63,6 @@ async getAllSlots(){
     async getSlotDetailsBySlotID(slotId: number): Promise<SlotsAvailability> {
         this.where=`where id=${slotId}`
         const result = await this.allRecords('*');
-        //console.log("slotdetails are: ",result.length)
         return result.length > 0 ? result[0] : null;
   }
 
@@ -81,7 +76,6 @@ async getAllSlots(){
     async getSlotsByDoctorId(doctorId: number): Promise<SlotsAvailability[]> {
         this.where = `where doctor_id=${doctorId}`;
         const result = await this.allRecords('*');
-        console.log("slotdetails are: ",result.length,result)
         return result.length > 0 ? result : [];
     }
 
@@ -94,7 +88,6 @@ async getAllSlots(){
     async getSlotsByAvailability(): Promise<SlotsAvailability[]> {
         this.where = `where status='available' OR status='cancelled'`;
         const result = await this.allRecords('*');
-        console.log("all slot avail/cancel : ",result,result.length)
         return result.length > 0 ? result : [];
    }    
     
@@ -127,8 +120,6 @@ async getDoctorsWithAvailableSlots(searchQuery:string){
     this.orderby=`order by doc.name AS doctor_name`
 
     const response = await this.allRecords(fields);
-    console.log("records are: ",response);
-
 
     return response.length>0?response:[];
  }
@@ -171,10 +162,8 @@ async updatePastDateSlotsDateAndStatus() {
     public scheduleTask() {
         // * * * * * => min hour day_of_month month day_of_week
         cron.schedule('1 0 * * *', async () => { // Cron expression for 12:01 AM
-        console.log('Running scheduled task at:', new Date());
         try {
             await this.updatePastDateSlotsDateAndStatus();
-            console.log('Scheduled task completed.');
         } catch (error) {
             console.error('Error in scheduled task:', error);
         }
