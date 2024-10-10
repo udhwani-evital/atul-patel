@@ -195,11 +195,12 @@ medical_history string
 age int
 }
 ```
-<img width="618" alt="image" src="https://github.com/user-attachments/assets/bfce448f-4843-4e51-b302-3ebad2078027">
+## ER-Diagram (using DBeaver):
+![ER](https://github.com/user-attachments/assets/ae819e09-91a8-42e0-a587-fdd5344c0396)
 
 
-## Data Flow Diagram (using draw):
-![DFD](https://github.com/user-attachments/assets/c34ed22f-6026-463f-aba6-db3a468f766c)
+## Data Flow Diagram (using draw.io):
+![DFD](https://github.com/user-attachments/assets/f55bde2f-319e-4965-ae26-8f35976d054e)
 
 
 ## Additional Considerations
