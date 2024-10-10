@@ -3,13 +3,13 @@ import { Functions } from '../library/functions';
 import SlotBookingModel from '../model/dbSlotBookingModel';
 import SlotsModel from '../model/dbSlotsModel';
 
-const functions = new Functions();
 
 /**
  * Middleware to authorize roles.
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+    const functions = new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0,"Access denied",null));
@@ -19,38 +19,39 @@ export let authorizedRoles = (...allowedRoles: string[]) => {
 };
 
 // ---------------------------ROUTES---------------------------------------
-const slotBookingRouter = Router();
+const router = Router();
 
 //get all bookings : admin acees only:
-slotBookingRouter.get('/getAllBookings', authorizedRoles('admin'), getAllBookedSlots); //tested
+router.get('/get_all_bookings', authorizedRoles('admin'), getAllBookedSlots); //tested
 
 //get getBookedSlotByBookingId:
-slotBookingRouter.get('/getBookingByBookingId/:id', getBookingByBookingId);  //tested
+router.get('/get_booking_by_booking_id/:id', getBookingByBookingId);  //tested
 
 //get getBookedSlotByBookingId:
-slotBookingRouter.get('/getAllBookingsByDoctorId/:id',authorizedRoles("doctor","admin"), findBookingsByDoctorId);  //tested
+router.get('/get_all_bookings_by_doctor_id/:id',authorizedRoles("doctor","admin"), findBookingsByDoctorId);  //tested
 
 
 //get getBookedSlotByBookingId:
-slotBookingRouter.get('/getAllBookingsByPatientId/:id',authorizedRoles("patient","admin"), findBookingsByPatientId); //tested
+router.get('/get_all_bookings_by_patient_id/:id',authorizedRoles("patient","admin"), findBookingsByPatientId); //tested
 
 
 //book a new slot
 // @param: slot_id 
-slotBookingRouter.post('/booknewSlot/:id',authorizedRoles("patient"), makeBookingBySlotId);  //tested
+router.post('/book_new_slot/:id',authorizedRoles("patient"), makeBookingBySlotId);  //tested
 
 
 //cancel the slot by appointment id:
-slotBookingRouter.patch('/cancelBookedSlot/:id', cancelBookingByAppointmentId);  //tested
+router.patch('/cancel_booked_slot/:id', cancelBookingByAppointmentId);  //tested
 
 
-export default slotBookingRouter;
+export default router;
 
 // --------------------------- FUNCTIONS------------------------------------------
 
 
 // to book a slot based on slotId:
 async function makeBookingBySlotId(req: Request, res: Response) {
+    const functions = new Functions();
     try {
         const { id: slotID } = req.params;
         const { id: patient_id } = req.body.user;
@@ -102,6 +103,7 @@ async function makeBookingBySlotId(req: Request, res: Response) {
 
 // Function to get all Booked slots: admin access:
 async function getAllBookedSlots(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         const result = await SlotBookingModel.findAllBookings();
         if (!result || result.length < 1) {
@@ -120,7 +122,8 @@ async function getAllBookedSlots(req: Request, res: Response): Promise<Response<
 // cancel Booking :
 async function cancelBookingByAppointmentId(req:Request,res:Response){
     const {id}=req.params;
-    try{
+    const functions = new Functions();
+    try {
         const cancelResponse= await SlotBookingModel.cancelBookingStatus(+id);
 
         if(cancelResponse.status){
@@ -136,6 +139,7 @@ async function cancelBookingByAppointmentId(req:Request,res:Response){
 
 // Get all Bookings by patientId:
 async function findBookingsByPatientId(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         let {id} = req.params;
         
@@ -156,6 +160,7 @@ async function findBookingsByPatientId(req: Request, res: Response): Promise<Res
 
 // Get all Bookings by doctorId:
 async function findBookingsByDoctorId(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         let {id} = req.params;
         const result = await SlotBookingModel.findBookingsByDoctorId(+id);
@@ -175,6 +180,7 @@ async function findBookingsByDoctorId(req: Request, res: Response): Promise<Resp
 
 // Get Booked slotBy bookingId:
 async function getBookingByBookingId(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         let {id} = req.params;
         

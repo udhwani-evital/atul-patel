@@ -5,8 +5,6 @@ import PaymentModel, { Payment } from '../model/dbPaymentModel';
 import { validations } from '../library/validations';
 
 
-const functions = new Functions();
-
 //---------------------Middleware---------------------------------
 
 /**
@@ -14,6 +12,7 @@ const functions = new Functions();
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+   const functions = new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
@@ -55,33 +54,34 @@ function appointmentIdSchema(req: any, res: any, next: any) {
 
 //-------------------Routes--------------------------------------------
 
-const paymentRouter = Router();
+const router = Router();
 
 // Create a new payment
-paymentRouter.post('/createPayment', authorizedRoles('patient'),paymentSchema, createPayment);
+router.post('/create_payment', authorizedRoles('patient'),paymentSchema, createPayment);
 
 // get all payments: ADMIN ACCESS
-paymentRouter.get('/getAllPayments', authorizedRoles('admin'), getAllPayments);
+router.get('/get_all_payments', authorizedRoles('admin'), getAllPayments);
 
 
 // get payment detail by doctorId: Doctor admin access
-paymentRouter.get('/getPaymentsByDoctorId/:id', authorizedRoles('doctor','admin'),appointmentIdSchema, getPaymentsByDoctorId);
+router.get('/get_payments_by_doctor_id/:id', authorizedRoles('doctor','admin'),appointmentIdSchema, getPaymentsByDoctorId);
 
 
 //get payment status by patientId: Patient admin access
-paymentRouter.get('/getPaymentsByPatientId/:id', authorizedRoles('patient','admin'),appointmentIdSchema, getPaymentsByPatientId);
+router.get('/get_payments_by_patient_id/:id', authorizedRoles('patient','admin'),appointmentIdSchema, getPaymentsByPatientId);
 
 
 //get paymnet status by appointment id:
-paymentRouter.get('/getPaymentByAppoitmnentId/:id',appointmentIdSchema,  getPaymentByAppointmentId);
+router.get('/get_payments_by_appoitmnent_id/:id',appointmentIdSchema,  getPaymentByAppointmentId);
 
 
-export default paymentRouter;
+export default router;
 
 
 //-------------------------------Functions-----------------------------------------------------
 // Function to create a payment
 async function createPayment(req: Request, res: Response) {
+    const functions = new Functions();
     try {
         const paymentData: Payment = req.body;
         const result = await PaymentModel.createPayment(paymentData);
@@ -99,6 +99,7 @@ async function createPayment(req: Request, res: Response) {
 
 // Function to get all payments
 async function getAllPayments(req: Request, res: Response) {
+    const functions = new Functions();
     try {
         const payments = await PaymentModel.getAllPayments();
         return res.send(functions.output(1, 'All payments retrieved successfully', payments));
@@ -113,6 +114,7 @@ async function getAllPayments(req: Request, res: Response) {
 // Function to get payments by doctor ID
 async function getPaymentsByDoctorId(req: Request, res: Response) {
     const { id } = req.params;
+    const functions = new Functions();
     try {
         const payments = await PaymentModel.getPaymentsByDoctorId(+id);
         if (payments.length > 0) {
@@ -128,6 +130,7 @@ async function getPaymentsByDoctorId(req: Request, res: Response) {
 // Function to get payments by patient ID
 async function getPaymentsByPatientId(req: Request, res: Response) {
     const { id } = req.params;
+    const functions = new Functions();
     try {
         const payments = await PaymentModel.getPaymentsByPatientId(+id);
         if (payments.length > 0) {
@@ -143,6 +146,7 @@ async function getPaymentsByPatientId(req: Request, res: Response) {
 // Function to get payment by appointment ID
 async function getPaymentByAppointmentId(req: Request, res: Response) {
     const { id } = req.params;
+    const functions = new Functions();
     try {
         const payment = await PaymentModel.getPaymentByAppointmentId(+id);
         if (payment) {

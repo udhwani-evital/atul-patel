@@ -15,12 +15,6 @@ export interface SlotsAvailability {
 }
 
 
-
-
-const functions = new Functions();
-
-
-
 class SlotsModel extends Appdb {
   constructor() {
     super();
@@ -133,6 +127,7 @@ async getDoctorsWithAvailableSlots(searchQuery:string){
  * @returns A promise that resolves to the number of updated rows.
  */
 async updatePastDateSlotsDateAndStatus() {
+    const functions = new Functions();
     const currentDate = new Date();
     const pastDate = new Date(currentDate.setDate(currentDate.getDate() - 1)); // Get yesterday's date object
 

@@ -53,7 +53,7 @@ class DoctorModel extends Appdb {
    */
   async findDoctorById(doctor_id: number): Promise<Doctor | null> {
     this.where =`where doctor_id=${doctor_id}`;
-    const fields =`d.*, s.specialty , s.diseases_covered As covered_diseases`;
+    const fields =`d.doctor_id,d.name,d.mobile,d.email,d.registration_number,d.address,d.gender,d.qualifications,d.year_of_experience,d.specialty_id,d.total_consultations,s.specialty , s.diseases_covered As covered_diseases`;
     this.table=`doctor d
       LEFT JOIN specialty s ON d.specialty_id=s.specialty_id`;
     const result = await this.allRecords(fields);
@@ -109,7 +109,7 @@ class DoctorModel extends Appdb {
    * @returns An array of doctors with specialty details.
    */
   async findAllDoctorsWithSpecialties(): Promise<Doctor[]> {
-    const fields =`d.*, s.specialty , s.diseases_covered As covered_diseases`;
+    const fields =`d.doctor_id,d.name,d.mobile,d.email,d.registration_number,d.address,d.gender,d.qualifications,d.year_of_experience,d.specialty_id,d.total_consultations, s.specialty , s.diseases_covered As covered_diseases`;
     this.table=`doctor d
       LEFT JOIN specialty s ON d.specialty_id=s.specialty_id`;
     this.orderby=`order by d.specialty_id`;
@@ -153,7 +153,7 @@ async searchDoctorsWith_Specialization_Disease_DoctorName(searchTerm: string): P
  */
 async searchDoctorsWithSchedules(query: string): Promise<any[]> {
     const fields = `
-        d.*, s.specialty, s.diseases_covered AS covered_diseases, 
+        d.doctor_id,d.name,d.mobile,d.email,d.registration_number,d.address,d.gender,d.qualifications,d.year_of_experience,d.specialty_id,d.total_consultations, s.specialty, s.diseases_covered AS covered_diseases, 
         ds.start_time, ds.end_time, ds.consultation_duration, ds.day, ds.fee, 
         c.name AS clinic_name, c.address AS clinic_address
     `;

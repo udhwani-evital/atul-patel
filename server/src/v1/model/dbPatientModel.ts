@@ -24,7 +24,8 @@ class PatientModel extends Appdb {
    * @returns An array of all patients.
    */
   async findAllPatients(): Promise<Patient[]> {
-    return this.allRecords();
+    const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
+    return this.allRecords(fields);
   }
 
   /** ANY logged in user accesss:
@@ -33,7 +34,8 @@ class PatientModel extends Appdb {
    * @returns The found patient or null.
    */
   async findPatientById(patient_id: number): Promise<Patient | null> {
-    const result = await this.selectRecord(patient_id);
+    const fields="patient_id,name,mobile,email,address,gender,medical_history,age";
+    const result = await this.selectRecord(patient_id,fields);
     return result.length > 0 ? result[0] : null;
   }
 

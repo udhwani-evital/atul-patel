@@ -1,5 +1,5 @@
 import { Request, Response,Router} from 'express'; 
-import Joi, { object } from 'joi';
+import Joi from 'joi';
 import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import bcrypt from 'bcryptjs';
@@ -7,26 +7,25 @@ import jwt from 'jsonwebtoken';
 import userModel from "../model/dbAuthModel";
 
 
-
-const functions = new Functions();
 const joiStringRequired = Joi.string().trim().required();
 
 // ---------------------------ROUTES---------------------------------------
 
-const authRouter = Router();
-//will signup for admin from backend...this signup works only for doctors/patients
-authRouter.post('/signup', signupJoiValidatior, signup);
-//login all roles:
-authRouter.post('/login', loginJoiValidator, login);
+const router = Router();
 
-export default authRouter;
+//will signup for admin from backend...this signup works only for doctors/patients
+router.post('/signup', signup_Joi_Validator, signup);
+//login all roles:
+router.post('/login', login_Joi_Validator, login);
+
+export default router;
 
 
 // ---------------------------VALIDATIONS---------------------------------------
 /**
  * Validation function for signup route
  */
-function signupJoiValidatior(req: any, res: any, next: any){
+function signup_Joi_Validator(req: any, res: any, next: any){
     const schema = Joi.object({     
     role: joiStringRequired.valid('doctor', 'patient'),
     name: joiStringRequired.min(2),
@@ -44,7 +43,7 @@ function signupJoiValidatior(req: any, res: any, next: any){
  /**
  * Validation function for login route:
  */
-  function loginJoiValidator(req: any, res: any, next: any) {
+  function login_Joi_Validator(req: any, res: any, next: any) {
   const schema = Joi.object({
     role: joiStringRequired.valid('admin', 'doctor', 'patient'),
     mobile: joiStringRequired,
@@ -62,7 +61,8 @@ function signupJoiValidatior(req: any, res: any, next: any){
  * Function for signup
  */
   async function signup(req: Request, res: Response):Promise<Response<any, Record<string, any>> | any>  {
-      try {
+    const functions = new Functions(); 
+    try {
        const { role,name,mobile, email, password } = req.body;
 
        const existingUser = await userModel.findUserByMobile({role,mobile});
@@ -85,6 +85,7 @@ function signupJoiValidatior(req: any, res: any, next: any){
  * Function for login
  */
   async function  login(req: Request, res: Response):Promise<Response<any, Record<string, any>> | any> {   
+    const functions = new Functions();
     try {
          const {role, mobile, password } = req.body;
       const user:any = await userModel.findUserByMobile({role,mobile});
@@ -130,7 +131,8 @@ function signupJoiValidatior(req: any, res: any, next: any){
  * Function for users update
  */
 export async function updateProfile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
-    try {
+  const functions = new Functions();  
+  try {
         const userId = parseInt(req.params.id); // ID from the URL
         const roleFromParams = req.baseUrl.split('/')[3]; // Role from URL
 

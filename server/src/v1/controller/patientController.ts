@@ -7,13 +7,13 @@ import { updateProfile } from './authController';
 
 
 const joiStringOptional= Joi.string().trim();
-const functions = new Functions();
 
 /**
  * Middleware to authorize roles.
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+    const functions = new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
@@ -22,22 +22,22 @@ export let authorizedRoles = (...allowedRoles: string[]) => {
     };
 };
 // ---------------------------ROUTES---------------------------------------
-const patientRouter = Router();
+const router = Router();
 
 // Route to fetch all patients (admin access only)
-patientRouter.get('/allpatients', authorizedRoles("admin"), getAllPatients); //tested
+router.get('/all_patients', authorizedRoles("admin"), getAllPatients); //tested
 
 // Route to fetch a patient by ID
-patientRouter.get('/getPatient/:id', getPatientById); //tested
+router.get('/get_patient/:id', getPatientById); //tested
 
 // Route to update a patient's profile
-patientRouter.patch('/updateprofile/:id', authorizedRoles("admin","patient"),updateProfileValidator, updateProfile); //tested
+router.patch('/update_profile/:id', authorizedRoles("admin","patient"),updateProfileValidator, updateProfile); //tested
 
 // Route to delete a patient by ID (admin access only)
-patientRouter.delete('/deletePatient/:id', authorizedRoles("admin"), deletePatientById); //tested
+router.delete('/delete_patient/:id', authorizedRoles("admin"), deletePatientById); //tested
 
 
-export default patientRouter;
+export default router;
 
 // ---------------------------VALIDATIONS---------------------------------------
 
@@ -62,13 +62,13 @@ function updateProfileValidator(req: any, res: any, next: any) {
 
 // Function to get all patients from the database
 async function getAllPatients(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         let result = await PatientModel.findAllPatients();
         if (!result || result.length < 1) {
             return res.send(functions.output(0, 'No patients found.', null));
         }
-        // Filter out Password fields from Array of object:
-        result = functions.filterPassword(result);
+        
         return res.send(functions.output(1, 'Patients found.', result));
     }
     catch (error) {
@@ -82,6 +82,7 @@ async function getAllPatients(req: Request, res: Response): Promise<Response<any
 async function getPatientById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const { id } = req.params;
 
+    const functions = new Functions();
     try {
         const patient_id = Number(id);
         if (isNaN(patient_id)) {
@@ -92,7 +93,6 @@ async function getPatientById(req: Request, res: Response): Promise<Response<any
         if (!result) {
             return res.send(functions.output(0, 'No such patient exists.', null));
         }
-        delete result.password;  //removing password
         return res.send(functions.output(1, 'Patient found.', result));
     } 
     catch (error) {
@@ -106,6 +106,7 @@ async function getPatientById(req: Request, res: Response): Promise<Response<any
 async function deletePatientById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     const { id } = req.params;
 
+    const functions = new Functions();
     try {
         const patient_id = Number(id);
         if (isNaN(patient_id)) {

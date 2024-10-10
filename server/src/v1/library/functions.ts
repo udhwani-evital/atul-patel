@@ -54,25 +54,6 @@ formatTimeForPostgres(dateobj: Date): string {
 }
 
 
-/**
- * Filters out the 'password' field from each object in the given array.
- * 
- * @param {Array<Object>} result - An array of objects that may contain a 'password' field.
- * @returns {Array<Object>} A new array of objects with the 'password' field excluded.
- */
-    filterPassword<T extends { password?: any }>(result: Array<T>): Array<Omit<T, 'password'>> {
-        if (!Array.isArray(result)) {
-            throw new Error('Expected an array of objects');
-        }   
-        return result.map(curr => {
-            const { password, ...resultWithoutPassword } = curr;
-            return resultWithoutPassword;
-        })
-    }
-
-
-
-
 
 /**
 * Function to convert day into coming/today date: 
@@ -93,7 +74,7 @@ formatTimeForPostgres(dateobj: Date): string {
         // Calculate the difference in days
         let daysUntilNext = targetDayIndex - todayDayIndex;
         
-        let slot_date;
+        let slot_date:any;
 
         if (daysUntilNext === 0) {
             // If today is the target day, set slot_date to today

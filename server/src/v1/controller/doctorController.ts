@@ -5,7 +5,6 @@ import { validations } from '../library/validations';
 import DoctorModel from '../model/dbDoctorModel';
 import {updateProfile} from '../controller/authController';
 
-const functions = new Functions();
 
 
 const joiStringRequired = Joi.string().trim().required();
@@ -15,6 +14,7 @@ const joiStringOptional= Joi.string().trim();
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+    const functions = new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
@@ -24,24 +24,24 @@ export let authorizedRoles = (...allowedRoles: string[]) => {
 };
 
 // ---------------------------ROUTES---------------------------------------
-const doctorRouter = Router();
+const router = Router();
 
 // Admin access : Fetch all doctors 
-doctorRouter.get('/alldoctors', getAllDoctors); //tested
+router.get('/all_doctors', getAllDoctors); 
 
 
 
 // Admin/doctor access : Fetch all clinics 
-doctorRouter.get('/allclinics', getAllClinics); //tested
+router.get('/all_clinics', getAllClinics); 
 
 
 // Fetch doctor by ID
-doctorRouter.get('/getDoctor/:id', getDoctorById); //tested
+router.get('/get_doctor/:id', getDoctorById); 
 
 
 // fetch doctors list With Specialization name or Disease name or by Doctor Name:
 // eg: /searchDoctorsWithQuery?search='fever'
-doctorRouter.get('/searchDoctorsWithQuery',searchDoctorsWithQuery);
+router.get('/search_doctors_with_query',searchDoctorsWithQuery);
 
 
 /**
@@ -50,27 +50,27 @@ doctorRouter.get('/searchDoctorsWithQuery',searchDoctorsWithQuery);
  .eg: /api/doctors/searchdoctors_WithAvailability_Schedules?search='fever'
  * @param {string} search - The search term to look for in doctor names, specialties, or diseases.
  */
-doctorRouter.get('/searchdoctors_WithAvailability_Schedules', searchDoctorsWithSchedules);
+router.get('/search_doctors_with_availability_schedules', searchDoctorsWithSchedules);
 
 
 // Update doctor profile
-doctorRouter.patch('/updateprofile/:id',authorizedRoles("admin","doctor"),updateProfileValidator,updateProfile); //tested
+router.patch('/update_profile/:id',authorizedRoles("admin","doctor"),updateProfileValidator,updateProfile); 
 
 // Get all specialties available
-doctorRouter.get('/specialties', getAllSpecialties); //tested
+router.get('/specialties', getAllSpecialties); 
 
 
 // Add clinic
-doctorRouter.post('/addclinic', authorizedRoles("admin", "doctor"), addClinicValidator, addClinic); //tested
+router.post('/add_clinic', authorizedRoles("admin", "doctor"), addClinicValidator, addClinic); 
 
 // Delete clinic by ID
-doctorRouter.delete('/deleteclinic/:id', authorizedRoles("admin"), deleteClinicById); //tested
+router.delete('/delete_clinic/:id', authorizedRoles("admin"), deleteClinicById); 
 
 
 //Delete doctor by ID (admin access only)
-doctorRouter.delete('/deleteDoctor/:id', authorizedRoles("admin"), deleteDoctorById); //tested
+router.delete('/delete_doctor/:id', authorizedRoles("admin"), deleteDoctorById); 
 
-export default doctorRouter;
+export default router;
 
 // ---------------------------VALIDATIONS---------------------------------------
 export interface SlotEntry {
@@ -134,15 +134,14 @@ function addClinicValidator(req: any, res: any, next: any) {
 
 // Function to get all doctors
 async function getAllDoctors(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         let result =await DoctorModel.findAllDoctorsWithSpecialties();
 
         if (result.length < 1) {
             return res.send(functions.output(0, 'No doctors found.', null));
         }
-
-        // Filter out Password fields from Array of object:
-        result = functions.filterPassword(result);
+        
         return res.send(functions.output(1, 'Doctors found.', result));
     } catch (error) {
         return res.send(functions.output(0, 'Internal Server Error', error));
@@ -156,6 +155,7 @@ async function getAllDoctors(req: Request, res: Response): Promise<Response<any,
  * @param res The response object to send the result.
  */
 async function searchDoctorsWithQuery(req: Request, res: Response): Promise<Response>  {
+    const functions = new Functions();
     try {
         const searchTerm = req.query.search as string || ''; 
         const doctors = await DoctorModel.searchDoctorsWith_Specialization_Disease_DoctorName(searchTerm);
@@ -180,6 +180,7 @@ async function searchDoctorsWithQuery(req: Request, res: Response): Promise<Resp
  * @returns A response object containing the search results or an error message.
  */
 async function searchDoctorsWithSchedules(req: Request, res: Response): Promise<Response> {
+    const functions = new Functions();
     try {
         const query = req.query.search as string || ''; // Get the query from the generic parameter
         const doctorsWithSchedules = await DoctorModel.searchDoctorsWithSchedules(query);
@@ -203,6 +204,7 @@ async function searchDoctorsWithSchedules(req: Request, res: Response): Promise<
 
 // Function to get all doctors
 async function getAllClinics(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         const result = await DoctorModel.findAllClinics();
         if (!result || result.length < 1) {
@@ -217,8 +219,8 @@ async function getAllClinics(req: Request, res: Response): Promise<Response<any,
 
 // Function to get doctor by ID
 async function getDoctorById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     const { id } = req.params;
-
     try {
         const doctor_id = Number(id);
         if (isNaN(doctor_id)) {
@@ -238,6 +240,7 @@ async function getDoctorById(req: Request, res: Response): Promise<Response<any,
 
 // Function to get all specialties
 async function getAllSpecialties(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         const result = await DoctorModel.findAllSpecialties();
         if (!result || result.length < 1) {
@@ -253,6 +256,7 @@ async function getAllSpecialties(req: Request, res: Response): Promise<Response<
 
 // Function to add a clinic
 async function addClinic(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     try {
         const clinicData = req.body;
         const result = await DoctorModel.addClinic(clinicData);
@@ -272,8 +276,8 @@ async function addClinic(req: Request, res: Response): Promise<Response<any, Rec
 
 // Function to delete clinic by ID
 async function deleteClinicById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     const { id } = req.params;
-
     try {
         const clinic_id = Number(id);
         if (isNaN(clinic_id)) {
@@ -295,8 +299,8 @@ async function deleteClinicById(req: Request, res: Response): Promise<Response<a
 
 // Function to delete doctor by ID (admin only)
 async function deleteDoctorById(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const functions = new Functions();
     const { id } = req.params;
-
     try {
         const doctor_id = Number(id);
         if (isNaN(doctor_id)) {

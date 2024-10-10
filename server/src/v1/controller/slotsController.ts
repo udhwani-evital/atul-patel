@@ -4,13 +4,13 @@ import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import SlotsModel,{SlotsAvailability} from '../model/dbSlotsModel';
 
-const functions = new Functions();
 
 /**
  * Middleware to authorize roles.
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+    const functions = new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0, 'Access denied', null));
@@ -20,26 +20,26 @@ export let authorizedRoles = (...allowedRoles: string[]) => {
 };
 
 // ---------------------------ROUTES---------------------------------------
-const slotsRouter = Router();
+const router = Router();
 
 //get slots : only admin:
-slotsRouter.get('/getallSlots',authorizedRoles("admin"),getAllSlots); 
+router.get('/get_all_slots',authorizedRoles("admin"),getAllSlots); 
 
 //get slots by doctors id:
-slotsRouter.get('/getSlotsByDoctorId/:doctorId',getSlotsByDoctorId);
+router.get('/get_slots_by_doctor_id/:doctorId',getSlotsByDoctorId);
 
 //get slots by availability:
-slotsRouter.get('/getSlotsByAvailability',getSlotsByAvailability);
+router.get('/get_slots_by_availability',getSlotsByAvailability);
 
 
 //get slots by SlotId:
-slotsRouter.get('/getSlotBySlotId/:id',getSlotsBySlotId);
+router.get('/get_slot_by_slot_id/:id',getSlotsBySlotId);
 
 
 // get doctors by speciality or by disease or doc name or all:
-slotsRouter.get('/getdoctorsonSearch',getAllDoctorsBySpecialtyOrDiseaseName);
+router.get('/get_doctors_on_Search',getAllDoctorsBySpecialtyOrDiseaseName);
 
-export default slotsRouter;
+export default router;
 
 // ---------------------------VALIDATIONS---------------------------------------
 
@@ -69,7 +69,8 @@ function slotSchemaValidator(req: any, res: any, next: any) {
 
 //get slot by slost id:
 export async function getSlotsBySlotId(req:Request,res:Response){
-    try{
+    const functions = new Functions();
+    try {
         const {id}=req.params;
         const slotDetails = await SlotsModel.getSlotDetailsBySlotID(+id);
         if(slotDetails){
@@ -87,6 +88,7 @@ export async function getSlotsBySlotId(req:Request,res:Response){
 
 // generate slots based on id of schedule:
 export async function generateScheduleSlots(schedule: any, res: Response): Promise<Response<any>> {
+    const functions = new Functions();
     try {
         const { id, doctor_id, clinic_id, start_time, end_time, consultation_duration, day, fee } = schedule;
 
@@ -129,6 +131,7 @@ export async function generateScheduleSlots(schedule: any, res: Response): Promi
 
 //get All slots: admin power:
 async function getAllSlots(req: Request, res: Response){
+    const functions = new Functions();
     try {
         const slots = await SlotsModel.getAllSlots();
         if(slots.length<0){
@@ -143,6 +146,7 @@ async function getAllSlots(req: Request, res: Response){
 
 // get slots by doctor ID
 async function getSlotsByDoctorId(req: Request, res: Response){
+    const functions = new Functions();
     try {
         const doctorId = parseInt(req.params.doctorId, 10);
         const slots = await SlotsModel.getSlotsByDoctorId(doctorId);
@@ -159,6 +163,7 @@ async function getSlotsByDoctorId(req: Request, res: Response){
 
 // get slot by availability:
 async function getSlotsByAvailability(req: Request, res: Response){
+    const functions = new Functions();
     try {
         const slots =await SlotsModel.getSlotsByAvailability();
         if(slots.length<1){
@@ -176,7 +181,8 @@ async function getSlotsByAvailability(req: Request, res: Response){
 
 //get doctors with available slots for a disease:
 async function getAllDoctorsBySpecialtyOrDiseaseName(req: Request, res: Response){
-    try{
+    const functions = new Functions();
+    try {
         const searchQuery = req.body||'*';
         const result =await SlotsModel.getDoctorsWithAvailableSlots(searchQuery);
 

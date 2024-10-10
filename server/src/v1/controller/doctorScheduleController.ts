@@ -6,8 +6,6 @@ import DoctorScheduleModel from '../model/dbDoctorScheduleModel';
 import {generateScheduleSlots} from "../controller/slotsController"
 
 
-
-const functions = new Functions();
 const joiStringRequired = Joi.string().trim().required();
 
 /**
@@ -15,6 +13,7 @@ const joiStringRequired = Joi.string().trim().required();
  * @param allowedRoles - Array of roles that are allowed access.
  */
 export let authorizedRoles = (...allowedRoles: string[]) => {
+    const functions=new Functions();
     return (req: Request | any, res: Response, next: NextFunction) => {
         if (!allowedRoles.includes(req.body.user.role)) {
             return res.send(functions.output(0, "Access Denied. User Not Authorized.", null));
@@ -24,24 +23,24 @@ export let authorizedRoles = (...allowedRoles: string[]) => {
 };
 
 // ---------------------------ROUTES---------------------------------------
-const doctorScheduleRouter = Router();
+const router = Router();
 
 // get all doctors schedules...
-doctorScheduleRouter.get('/allDoctorsSchedules',authorizedRoles("admin"), viewAllDoctorsSchedules); //tested
+router.get('/all_doctors_schedules',authorizedRoles("admin"), viewAllDoctorsSchedules); //tested
 
 // add a doctor's availability schedule
-doctorScheduleRouter.post('/addSchedule',authorizedRoles("admin","doctor"),scheduleValidator, addSchedule);
+router.post('/add_schedule',authorizedRoles("admin","doctor"),scheduleValidator, addSchedule);
 
 // Route to delete a doctor's availability schedule
-doctorScheduleRouter.delete('/deleteSchedule/:id',authorizedRoles("admin","doctor"), deleteSchedule);
+router.delete('/delete_schedule/:id',authorizedRoles("admin","doctor"), deleteSchedule);
 
 // Route to get schedules by doctor ID
-doctorScheduleRouter.get('/doctor/:doctorId', getScheduleByDoctorId);
+router.get('/doctor/:doctorId', getScheduleByDoctorId);
 
 // Route to get schedules by doctor ID
-doctorScheduleRouter.get('/scheduleDetails/:id', getScheduleByScheduleId);
+router.get('/schedule_details/:id', getScheduleByScheduleId);
 
-export default doctorScheduleRouter;
+export default router;
 
 // ---------------------------VALIDATIONS---------------------------------------
 
@@ -67,7 +66,8 @@ function scheduleValidator(req: any, res: any, next: any) {
 
 // to get all doctors schedules:
 async function viewAllDoctorsSchedules(req: Request, res: Response){
-    try{
+    const functions = new Functions();
+    try {
         const result = await DoctorScheduleModel.allSchedulesRecords();
         if(result){
              return res.send(functions.output(1, 'Doctors schedules are : !', result));
@@ -82,6 +82,7 @@ async function viewAllDoctorsSchedules(req: Request, res: Response){
 
 // Function to add a doctor's availability schedule
 async function addSchedule(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
+    const functions = new Functions();
     try {
         let { doctor_id, clinic_id, start_time, end_time, consultation_duration, day,fee } = req.body;
         
@@ -119,6 +120,7 @@ async function addSchedule(req: Request, res: Response): Promise<Response<any, R
 
 // Function to delete a doctor's availability schedule
 async function deleteSchedule(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
+    const functions = new Functions();
     try {
         const { id } = req.params;
 
@@ -138,6 +140,7 @@ async function deleteSchedule(req: Request, res: Response): Promise<Response<any
 
 // Function to get schedules by doctor ID
 async function getScheduleByDoctorId(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
+    const functions = new Functions();
     try {
         const { doctorId } = req.params;
         const schedules = await DoctorScheduleModel.getScheduleByDoctorId(parseInt(doctorId));
@@ -156,6 +159,7 @@ async function getScheduleByDoctorId(req: Request, res: Response): Promise<Respo
 
 // Function to get schedules by doctor ID
 async function getScheduleByScheduleId(req: Request, res: Response): Promise<Response<any, Record<string, any>> | any> {
+    const functions = new Functions();
     try {
         const { id } = req.params;
         const schedules = await DoctorScheduleModel.getScheduleById(parseInt(id));

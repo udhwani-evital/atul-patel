@@ -41,9 +41,6 @@ export let tokenValidator = (req: Request | any, res: Response, next: NextFuncti
 };
 
 
-
-
-
 router.use('/api/auth',authRouter);
 
 router.use(tokenValidator);
