@@ -1,5 +1,5 @@
 import { Request, Response,Router} from 'express'; 
-import Joi from 'joi';
+import Joi, { object } from 'joi';
 import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import bcrypt from 'bcryptjs';
@@ -117,7 +117,9 @@ function signupJoiValidatior(req: any, res: any, next: any){
         }, process.env.JWT_SECRET!, { expiresIn: '24h' });
 
       const  {password:_,...userData}=user;
-      return res.send(functions.output(1, 'Login Successful..', {token,role,data:userData}));; 
+      // keep token,role,useData in one object and pass that object
+      return res.send(functions.output(1, 'Login Successful..', {token,role,...userData})); 
+      //return res.send(functions.output(1, 'Login Successful..', {token,role,data:userData})); 
     } catch (error) {
       return res.send(functions.output(0,'Internal server error' ,error));
     }
@@ -149,10 +151,10 @@ export async function updateProfile(req: Request, res: Response): Promise<Respon
 
         const result = await userModel.updateUserProfile(tableName, userId, updates);
         if(!result){
-          return res.send(functions.output(0, "User id not found . Can't update!"));
+          return res.send(functions.output(0, "User id not found . Can't update!",null));
         }
         else{
-          return res.send(functions.output(1, "User data updated!"));
+          return res.send(functions.output(1, "User data updated!",result));
         }
 
     } catch (error: any) {

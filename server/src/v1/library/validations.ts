@@ -23,7 +23,7 @@ export class validations {
         if (errorfields.length > 0) {
             errorfields = errorfields.join(", ");
             let functionsObj: any = new Functions();
-            res.send(functionsObj.output(0, 'Please provide ' + errorfields));
+            res.send(functionsObj.output(0, `Please provide, ${errorfields}`,null));
             return false;
         } else {
             return true;
@@ -50,7 +50,7 @@ export class validations {
 
         let errorfields_string: string = errorfields.join(", ");
         let functionsObj: any = new Functions();
-        res.send(functionsObj.output(0, 'Please provide all ' + errorfields_string));
+        res.send(functionsObj.output(0, `Please provide all , ${errorfields_string}`,null));
         return false;
     }
 
@@ -77,7 +77,7 @@ export class validations {
         if (error) {
 
             let functionsObj = new Functions();
-            res.send(functionsObj.output(0, error.message));
+            res.send(functionsObj.output(0, error.message,error));
             return false;
         } else {
             req.body = value;

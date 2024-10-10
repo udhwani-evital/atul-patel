@@ -285,7 +285,7 @@ async function deleteClinicById(req: Request, res: Response): Promise<Response<a
             return res.send(functions.output(0, 'Clinic ID does not exist.', null));
         }
 
-        return res.send(functions.output(1, 'Clinic deleted successfully.'));
+        return res.send(functions.output(1, 'Clinic deleted successfully.',result));
     } 
     catch (error) {
         return res.send(functions.output(0, 'Internal Server Error', error));
@@ -308,7 +308,7 @@ async function deleteDoctorById(req: Request, res: Response): Promise<Response<a
             return res.send(functions.output(0, 'Doctor ID does not exist.', null));
         }
 
-        return res.send(functions.output(1, 'Doctor deleted successfully.'));
+        return res.send(functions.output(1, 'Doctor deleted successfully.',result));
     } 
     catch (error) {
         return res.send(functions.output(0, 'Internal Server Error', error));

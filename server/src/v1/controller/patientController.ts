@@ -117,7 +117,7 @@ async function deletePatientById(req: Request, res: Response): Promise<Response<
             return res.send(functions.output(0, 'Patient ID does not exist.', null));
         }
 
-        return res.send(functions.output(1, 'Patient deleted successfully.'));
+        return res.send(functions.output(1, 'Patient deleted successfully.',result));
     } 
     catch (error) {
         return res.send(functions.output(0, 'Internal Server Error', error));
