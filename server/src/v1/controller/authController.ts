@@ -98,7 +98,7 @@ function signupJoiValidatior(req: any, res: any, next: any){
       }
       
        // Dynamically get the user ID based on the role
-        let userId;
+        let userId:number = 0;
         if (role === 'admin') {
             userId = user.admin_id; 
         } else if (role === 'doctor') {
@@ -117,9 +117,8 @@ function signupJoiValidatior(req: any, res: any, next: any){
         }, process.env.JWT_SECRET!, { expiresIn: '24h' });
 
       const  {password:_,...userData}=user;
-      // keep token,role,useData in one object and pass that object
-      return res.send(functions.output(1, 'Login Successful..', {token,role,...userData})); 
-      //return res.send(functions.output(1, 'Login Successful..', {token,role,data:userData})); 
+
+      return res.send(functions.output(1, 'Login Successful..', {token,role,...userData}));
     } catch (error) {
       return res.send(functions.output(0,'Internal server error' ,error));
     }
@@ -135,7 +134,7 @@ export async function updateProfile(req: Request, res: Response): Promise<Respon
         const userId = parseInt(req.params.id); // ID from the URL
         const roleFromParams = req.baseUrl.split('/')[3]; // Role from URL
 
-        let tableName;
+        let tableName : string = "";
         if (roleFromParams === 'doctor' || roleFromParams === 'patient') {
             tableName = roleFromParams;
         } else {
