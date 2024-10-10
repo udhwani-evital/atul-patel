@@ -3,10 +3,10 @@ import Joi from 'joi';
 import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import PatientModel from '../model/dbPatientModel';
-import { constants } from '../constants'
 import { updateProfile } from './authController';
 
-const { joiStringOptional } = constants;
+
+const joiStringOptional= Joi.string().trim();
 const functions = new Functions();
 
 /**

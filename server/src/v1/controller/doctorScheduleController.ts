@@ -4,11 +4,11 @@ import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import DoctorScheduleModel from '../model/dbDoctorScheduleModel';
 import {generateScheduleSlots} from "../controller/slotsController"
-import { constants } from '../constants';
 
-const { joiStringRequired } = constants;
+
+
 const functions = new Functions();
-
+const joiStringRequired = Joi.string().trim().required();
 
 /**
  * Middleware to authorize roles.

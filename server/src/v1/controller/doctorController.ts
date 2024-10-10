@@ -4,11 +4,12 @@ import { Functions } from '../library/functions';
 import { validations } from '../library/validations';
 import DoctorModel from '../model/dbDoctorModel';
 import {updateProfile} from '../controller/authController';
-import {constants} from "../constants"
 
 const functions = new Functions();
 
-const {joiStringOptional,joiStringRequired}=constants;
+
+const joiStringRequired = Joi.string().trim().required();
+const joiStringOptional= Joi.string().trim();
 /**
  * Middleware to authorize roles.
  * @param allowedRoles - Array of roles that are allowed access.

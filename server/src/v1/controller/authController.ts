@@ -5,11 +5,11 @@ import { validations } from '../library/validations';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from "../model/dbAuthModel";
-import { constants } from '../constants';
 
 
-const {joiStringRequired}=constants;
+
 const functions = new Functions();
+const joiStringRequired = Joi.string().trim().required();
 
 // ---------------------------ROUTES---------------------------------------
 
