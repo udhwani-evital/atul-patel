@@ -1,0 +1,69 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.mat-drawer{
+  background-color: transparent;
+  border: none;
+} 
+
+.content {
+  margin-top: 64px;
+  padding: 20px;
+}
+
+.active {
+  background-color: rgb(100 177 249); 
+}
+
+.brandName {
+  text-decoration: none;
+  color: rgb(109, 29, 29);
+  font-weight: bolder;
+}
+
+.sidebar-icon {
+  margin: 0 8px 0 3px;
+}
+
+.navbar-container {
+  background-color: rgb(100 177 249);
+  position: fixed;
+  top: 0; 
+  right: 0; 
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+}
+
+.toggleBtn-avatar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-image {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  background-color: red;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.user-avatar {
+  font-size: 26px;
+  color: #555;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.sidebar-toggle-btn {
+  &:hover {
+    cursor: pointer;
+  }
+}

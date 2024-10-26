@@ -1,0 +1,31 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+mat-card {
+  margin-top: auto;
+  box-shadow: 0 2px 10px rgba(146, 67, 67, 0.2);
+}
+
+form {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+h1,
+p {
+  text-align: center;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+}

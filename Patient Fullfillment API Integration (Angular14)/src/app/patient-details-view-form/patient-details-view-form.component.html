@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Select Patient Details</h2>
+<mat-dialog-content>
+    <form [formGroup]="patientDetailForm" (ngSubmit)="submit()">
+        <mat-radio-group (change)="onOptionChange($event.value)">
+            <mat-radio-button value="patient_id">Patient ID</mat-radio-button>
+            <mat-radio-button value="mobile">Mobile</mat-radio-button>
+        </mat-radio-group>
+
+        <div>
+            <mat-form-field *ngIf="selectedOption === 'patient_id'" appearance="fill">
+                <mat-label>Patient ID</mat-label>
+                <input matInput formControlName="patient_id" placeholder="Enter Patient ID">
+                <mat-error *ngIf="patientDetailForm.get('patient_id')?.invalid && patientDetailForm.get('patient_id')?.touched">
+                    Patient ID is required.
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="selectedOption === 'mobile'" appearance="fill">
+                <mat-label>Mobile</mat-label>
+                <input matInput formControlName="mobile" placeholder="Enter Mobile Number" maxlength="10"
+                    minlength="10">
+                <mat-error *ngIf="patientDetailForm.get('mobile')?.hasError('required') && patientDetailForm.get('mobile')?.touched">
+                    Mobile is required.
+                </mat-error>
+                <mat-error *ngIf="patientDetailForm.get('mobile')?.hasError('minlength') && patientDetailForm.get('mobile')?.touched">
+                    Mobile must be 10 digits long.
+                </mat-error>
+                <mat-error *ngIf="patientDetailForm.get('mobile')?.hasError('maxlength') && patientDetailForm.get('mobile')?.touched">
+                    Mobile must be 10 digits long.
+                </mat-error>
+                <mat-error *ngIf="patientDetailForm.get('mobile')?.hasError('pattern') && patientDetailForm.get('mobile')?.touched">
+                    Only digits are allowed.
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="patientDetailForm.invalid">Submit</button>
+    </form>
+</mat-dialog-content>
