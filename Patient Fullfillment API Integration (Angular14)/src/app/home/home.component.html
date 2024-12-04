@@ -1,0 +1,40 @@
+<h1>Welcome to Patient Details Page!</h1>
+
+
+<mat-card class="patient-card">
+    <mat-card-header>
+        <mat-card-title style="text-align: center;color: rgb(75, 67, 83);">Patient Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list *ngIf="patientData; else noData">
+            <mat-list-item>
+                <span matLine><strong>First Name:</strong></span>
+                <span>{{ patientData.firstname || "-" }}</span>
+            </mat-list-item>
+            <mat-list-item>
+                <span matLine><strong>Last Name:</strong></span>
+                <span >{{ patientData.lastname || "-" }}</span>
+            </mat-list-item>
+            <mat-list-item>
+                <span matLine><strong>Mobile:</strong></span>
+                <span>{{ patientData.mobile || "-" }}</span>
+            </mat-list-item>
+            <mat-list-item>
+                <span matLine><strong>ZIP Code:</strong></span>
+                <span >{{ patientData.zipcode || "-" }}</span>
+            </mat-list-item>
+        </mat-list>
+
+        
+        <ng-template #noData>
+            <div style="text-align: center; color: red;">
+                <h4>No patient data found. Please <a routerLink="/register"> register  </a>  first. </h4>
+                <h3 style="text-align: center;color: rgb(104, 102, 102);font-weight: bold;">(Or)</h3>
+                <button mat-raised-button type="submit" color="primary" (click)="openBottomSheet()">View deatils by patient_Id or Mobile number</button>
+            </div>
+        </ng-template>
+
+
+    </mat-card-content>
+</mat-card>
+

@@ -1,0 +1,43 @@
+<mat-sidenav-container class="sidenav-container">
+    <!--left sidebar with menu -->
+    <mat-sidenav #sidenav mode="side" opened>
+        <mat-toolbar style="background-color: transparent;"></mat-toolbar>
+        <mat-list>
+            <a mat-list-item routerLink="/home" routerLinkActive="active"> <mat-icon
+                    class="sidebar-icon">home</mat-icon> Home </a>
+            <a mat-list-item routerLink="/register" routerLinkActive="active"> <mat-icon
+                    class="sidebar-icon">logout</mat-icon> Register</a>
+        </mat-list>
+    </mat-sidenav>
+
+
+    <!-- right sidebar area -->
+    <mat-sidenav-content>
+        <mat-toolbar color="primary" class="navbar-container">
+            <a routerLink="/home" class="brandName"><span>My Application</span></a>
+            <!-- User Avatar next to the toggle button -->
+            <div class="toggleBtn-avatar-container">
+
+                <!-- conditional dynamic avatar fallback svg in case of avatar load fail -->
+                <img *ngIf="isImageLoaded; else fallbackIcon" src="path_to_your_avatar_image.jpg" alt="User Avatar"
+                    (load)="isImageLoaded = true" (error)=" isImageLoaded = false" class="user-image" />
+
+                <ng-template #fallbackIcon>
+                    <mat-icon class="user-avatar" aria-label="User Avatar">account_circle</mat-icon>
+                </ng-template> 
+
+                <!-- Sidebar toggle btn -->
+                <button mat-icon-button (click)="sidenav.toggle()" class="sidebar-toggle-btn">
+                    <mat-icon>menu</mat-icon>
+                </button>
+            </div>
+        </mat-toolbar>
+
+        <!-- right side body container for routes -->
+        <div class="content">
+            <router-outlet></router-outlet> <!-- Where routed components will be displayed -->
+        </div>
+
+
+    </mat-sidenav-content>
+</mat-sidenav-container>
